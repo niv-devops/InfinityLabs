@@ -1,0 +1,20 @@
+# Ignore all files
+*
+# Ignore temp dir
+temp/*
+# Exclude:
+!*.c
+!*.h
+!*.sh
+!*.md
+!*.py
+!*.html
+!*.yaml
+!*.yml
+!*.tf
+# Exclude spesific files and dirs:
+!*/
+!.myfuncs
+!.gitignore
+# Ignore virtual env
+.venv

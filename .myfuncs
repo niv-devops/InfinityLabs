@@ -1,0 +1,36 @@
+## Bash aliases
+alias update='sudo apt update && sudo apt upgrade'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+## gcc compliation aliases :c89, c99, debug mode, release mode, object file
+alias gd='gcc -ansi -pedantic-errors -Wall -Wextra -g -o'
+alias gc='gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
+alias gd9='gcc -std=c99 -pedantic-errors -Wall -Wextra -g'
+alias gc9='gcc -std=c99 -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
+alias cobj='gcc -c'
+
+## Valgrind alias
+alias vlg='valgrind --leak-check=yes --track-origins=yes'
+
+## Git commands aliases
+alias gs='git status'
+alias gadd='git add .'
+alias gcom='git commit -m'
+alias gp='git push -u origin master'
+alias gpl='git pull'
+alias gf='git fetch'
+alias gco='git checkout'
+alias gb='git branch'
+alias gdiff='git diff'
+alias gr='git reset'
+
+# Kubrnetes
+alias kubectl="minikube kubectl --"
+
+# Config terminal prompt
+#PS1='🛸 \[\033[1;36m\]\u \[\033[1;34m\]🔱 \[\033[1;33m\]\w \[\033[1;33m\]🔱 \[\033[1;36m\]\t \[\033[1;36m\]🛸 \[\033[0m\]'
+
+# Auto complete kubectl
+source <(kubectl completion bash)

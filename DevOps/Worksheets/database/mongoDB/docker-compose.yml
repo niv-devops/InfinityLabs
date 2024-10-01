@@ -1,0 +1,32 @@
+services:
+  mongodb_primary:
+    image: mongo:latest
+    container_name: mongodb_primary
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    command: mongod --replSet "rs0"
+    
+  mongodb_sec_1:
+    image: mongo:latest
+    container_name: mongodb_sec_1
+    volumes:
+      - mongo_sec_1_data:/data/db
+    command: mongod --replSet "rs0"
+    depends_on:
+      - mongodb_primary
+
+  mongodb_sec_2:
+    image: mongo:latest
+    container_name: mongodb_sec_2
+    volumes:
+      - mongo_sec_2_data:/data/db
+    command: mongod --replSet "rs0"
+    depends_on:
+      - mongodb_primary
+
+volumes:
+  mongo_data:
+  mongo_sec_1_data:
+  mongo_sec_2_data:

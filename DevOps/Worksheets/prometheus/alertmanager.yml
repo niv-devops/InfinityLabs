@@ -1,0 +1,13 @@
+  GNU nano 7.2                                                                           alertmanager.yml                                                                                     
+global:
+  resolve_timeout: 1m
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#prometheus-alerts'
+    send_resolved: false

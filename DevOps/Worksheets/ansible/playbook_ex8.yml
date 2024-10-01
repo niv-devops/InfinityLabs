@@ -1,0 +1,74 @@
+---
+- name: Deploy web application
+  hosts: all
+  become: yes
+  vars:
+    app_src: /home/niv/InfinityLabs/DevOps/WebApp
+    app_dest: /home/ubuntu/webapp
+    app_service: webapp
+    gunicorn_path: /usr/local/bin/gunicorn
+    tar_file: /home/niv/InfinityLabs/DevOps/WebApp.tar.gz
+
+  tasks:
+    - name: Create application directory
+      file:
+        path: "{{ app_dest }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy application files
+      copy:
+        src: "{{ app_src }}/"
+        dest: "{{ app_dest }}/"
+        mode: '0644'
+
+    - name: Install prerequisites
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+        state: present
+        
+    - name: Set up virtual environment
+      command: python3 -m venv {{ app_dest }}/venv
+      args:
+        creates: "{{ app_dest }}/venv"
+
+    - name: Install application dependencies
+      pip:
+        requirements: "{{ app_dest }}/requirements.txt"
+        virtualenv: "{{ app_dest }}/venv"
+        
+    - name: Install gunicorn
+      pip:
+        name: gunicorn
+        virtualenv: "{{ app_dest }}/venv"
+        
+    - name: Create application systemd service
+      copy:
+        dest: /etc/systemd/system/{{ app_service }}.service
+        content: |
+          [Unit]
+          Description=Weather Web App
+          After=network.target
+
+          [Service]
+          WorkingDirectory={{ app_dest }}
+          ExecStart={{ gunicorn_path }} --bind 0.0.0.0:5000 wsgi:app
+          Restart=always
+          Environment="PATH={{ app_dest }}/venv/bin"
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: '0644'
+
+    - name: Reload systemd for new application service
+      systemd:
+        daemon_reload: yes
+        
+    - name: Start application service
+      systemd:
+        name: "{{ app_service }}"
+        state: started
+        enabled: yes

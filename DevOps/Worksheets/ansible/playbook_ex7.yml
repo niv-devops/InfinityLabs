@@ -1,0 +1,16 @@
+---
+- name: Ansible WS EX7
+  hosts: all
+  become: yes
+  tasks:
+    - name: Stop printer.target service
+      systemd:
+        name: printer.target
+        state: stopped
+      ignore_errors: yes
+
+    - name: Install latest version of nginx
+      package:
+        name: nginx
+        state: latest
+        state: started
