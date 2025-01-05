@@ -1,0 +1,29 @@
+# Global configuration
+global:
+  image:
+    registry: docker.io
+    repository: bitnami/nginx
+    tag: latest
+
+# Nginx configuration
+controller:
+  service:
+    enabled: true
+    type: NodePort
+    port: 80
+    targetPort: 80
+    annotations: {}
+  replicaCount: 1
+  config:
+    nginx.conf: |
+      events {}
+      http {
+        server {
+          listen 80;
+          server_name localhost;
+          location / {
+            return 200 'Hello World From NGINX!';
+            add_header Content-Type text/plain;
+          }
+        }
+      }

@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: example-cronjob
+spec:
+  # The schedule is in Cron format, "0 */12 * * *" means "at minute 0 past every 12th hour"
+  schedule: "0 */12 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: example-container
+            image: refresh-credentials:latest
+            # Using "bash -c" to execute multiple commands
+            command: ["/bin/bash", "-c", "/app/start.sh"]
+            # Example commands to be replaced with actual commands to be executed
+            # where:
+            # command1, command2, command3 are the bash commands you want to run.
+          restartPolicy: OnFailure

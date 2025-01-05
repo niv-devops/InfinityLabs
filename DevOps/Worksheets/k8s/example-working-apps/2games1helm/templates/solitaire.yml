@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.deployment.gamesolitare.namespace }}
+  name: {{ .Values.deployment.gamesolitare.name }}
+  labels:
+    app: {{ .Values.deployment.gamesolitare.name }}
+spec:
+  replicas: {{ .Values.deployment.gamesolitare.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.gamesolitare.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.gamesolitare.name }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup
+                operator: In
+                values:
+                - presistent_services_remote_access
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "presistent"
+        effect: "NoSchedule"
+      containers:
+        - image: {{ .Values.deployment.gamesolitare.containers.image }}
+          imagePullPolicy: {{ .Values.deployment.gamesolitare.containers.imagePullPolicy }}
+          name: {{ .Values.deployment.gamesolitare.containers.name }}
+          ports:
+            - containerPort: {{ .Values.deployment.gamesolitare.containers.containerPort }}
+              protocol: {{ .Values.deployment.gamesolitare.containers.protocol }}
+      restartPolicy: {{ .Values.deployment.gamesolitare.containers.restartPolicy }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.service.gamesolitare.namespace }}
+  name: {{ .Values.service.gamesolitare.name }}
+  labels:
+    app: {{ .Values.service.gamesolitare.name }}
+spec:
+  type: {{ .Values.service.gamesolitare.type }}
+  selector:
+    app: {{ .Values.service.gamesolitare.name }}
+  ports:
+    - name: {{ .Values.service.gamesolitare.ports.name }}
+      port: {{ .Values.service.gamesolitare.ports.port }}
+      targetPort: {{ .Values.service.gamesolitare.ports.targetPort }}

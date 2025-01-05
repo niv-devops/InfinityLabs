@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  goofy-chart:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-10-16T13:49:19.965724373+03:00"
+    description: A Helm chart for Kubernetes
+    digest: 106fbb43bbad3d086f8efd333f62647a55d1b8fa6c9f6618ce89fe26fbb6ea57
+    icon: https://www.myqnap.org/wp-content/uploads/nginx-3628948-3030173-1.png
+    name: goofy-chart
+    type: application
+    urls:
+    - https://niv-devops.github.io/helm-charts/goofy-chart-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-10-16T13:49:19.965202299+03:00"

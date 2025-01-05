@@ -1,0 +1,9 @@
+# Project
+__pycache__/
+*.db
+
+# Environment variables
+.env
+
+# Virtual environment
+.venv/

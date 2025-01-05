@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: credentials-refresh-test
+  namespace: argocd
+spec:
+  containers:
+  - image: 993467604613.dkr.ecr.eu-central-1.amazonaws.com/refresh-credentials:v2.1
+    name: refresh-credentials
+    # args: 
+    #   - kubectl get nodes
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

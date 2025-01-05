@@ -1,0 +1,8 @@
+global:
+  mysql:
+    auth:
+      rootPassword: goofyroot
+      database: wordpress
+
+service:
+  type: NodePort

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.deployment.game2048.namespace }}
+  name: {{ .Values.deployment.game2048.name }}
+  labels:
+    app: {{ .Values.deployment.game2048.name }}
+spec:
+  replicas: {{ .Values.deployment.game2048.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.game2048.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.game2048.name }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup
+                operator: In
+                values:
+                - presistent_services_remote_access
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "presistent"
+        effect: "NoSchedule"
+      containers:
+        - image: {{ .Values.deployment.game2048.containers.image }}
+          imagePullPolicy: {{ .Values.deployment.game2048.containers.imagePullPolicy }}
+          name: {{ .Values.deployment.game2048.containers.name }}
+          ports:
+            - containerPort: {{ .Values.deployment.game2048.containers.containerPort }}
+              protocol: {{ .Values.deployment.game2048.containers.protocol }}
+          resources:
+            requests:
+              memory: "1Gi"  # Request 1GB of memory
+      restartPolicy: {{ .Values.deployment.game2048.containers.restartPolicy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.service.game2048.namespace }}
+  name: {{ .Values.service.game2048.name }}
+  labels:
+    app: {{ .Values.service.game2048.name }}
+spec:
+  type: {{ .Values.service.game2048.type }}
+  selector:
+    app: {{ .Values.service.game2048.name }}
+  ports:
+    - name: {{ .Values.service.game2048.ports.name }}
+      port: {{ .Values.service.game2048.ports.port }}
+      targetPort: {{ .Values.service.game2048.ports.targetPort }}

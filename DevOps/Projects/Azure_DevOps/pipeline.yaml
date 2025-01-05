@@ -1,0 +1,129 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - main
+
+pool:
+  name: goofy
+
+jobs:
+  - job: DevTasks
+    displayName: 'Dev Branch Tasks: SonarQube, NuGet, and Publish'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+    variables:
+    - group: PIPELINE
+      value: 'true'
+    - name: artifactVersion
+      value: "1.0.$(Build.BuildId)-$(Build.SourceBranchName)"
+
+    steps:
+    - checkout: self
+      fetchDepth: 0
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '8.x'  
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet Tool'
+    
+    - task: NuGetAuthenticate@1
+      displayName: 'NuGet Authenticate'
+      
+    - task: SonarQubePrepare@6
+      inputs:
+        SonarQube: 'SonarQube'
+        scannerMode: 'MSBuild'
+        organization: 'nivz267'
+        projectKey: 'nivz267_hello_world'
+        projectName: 'hello_world'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: './HelloWorld/HelloWorld.csproj'
+      displayName: 'Restore dependencies'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: './HelloWorld/HelloWorld.csproj'
+        arguments: '--configuration Release'
+      displayName: 'Build project'
+
+    - task: SonarQubeAnalyze@6
+      inputs:
+        jdkversion: 'JAVA_HOME_21_X64'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'pack'
+        projects: './HelloWorld/HelloWorld.csproj'
+        versioningScheme: 'byEnvVar'
+        versionEnvVar: artifactVersion
+        arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+      displayName: 'Pack The Project'
+
+    - script: |
+        dotnet nuget push $(Build.ArtifactStagingDirectory)/*.nupkg --source "https://pkgs.dev.azure.com/nivz267/hello_world/_packaging/goofy/nuget/v3/index.json" --api-key $(System.AccessToken)
+      displayName: 'Push NuGet Package to Azure Artifacts'
+
+    - script: |
+        echo "Artifact Version: $(artifactVersion)"
+      displayName: 'Print Artifact Version'
+
+    - script: |
+        SUBJECT="Azure DevOps Pipeline Status: $(Build.DefinitionName) - $(Build.BuildId)"
+        BODY="On $(Build.Repository.Provider) - $(Build.Repository.Name) Repository:"
+        BODY="${BODY}The build pipeline has completed with status: $(Agent.JobStatus)\n\n"
+        BODY="${BODY}Pipeline Name: $(Build.DefinitionName)\n"
+        BODY="${BODY}Branch: $(Build.SourceBranchName)\n"
+        BODY="${BODY}Go To Repo: $(Build.Repository.Uri)\n"      
+        curl -v --url 'smtp://smtp.gmail.com:587' --ssl-reqd \
+            --mail-from "$(GMAIL_USER)" --mail-rcpt "$(GMAIL_USER)" \
+            --upload-file <(echo -e "Subject: $SUBJECT\n\n$BODY") \
+            --user "$(GMAIL_USER):$(GMAIL_PASSWORD)" --insecure
+      displayName: 'Send Pipeline Status Email'
+      condition: always()
+
+  - job: MainTasks
+    displayName: 'Main Branch Tasks: Build, Pack, and Publish Project'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '8.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+
+    - script: |
+        dotnet restore ./HelloWorld/HelloWorld.csproj
+      displayName: 'Restore dependencies'
+
+    - script: |
+        dotnet build ./HelloWorld/HelloWorld.csproj --configuration Release
+      displayName: 'Build Project'
+
+    - script: |
+        dotnet pack ./HelloWorld/HelloWorld.csproj --configuration Release --output $(Build.ArtifactStagingDirectory)
+      displayName: 'Pack NuGet Package'
+
+    - task: UniversalPackages@0
+      displayName: 'Publish Universal Package to Azure Artifacts'
+      inputs:
+        command: publish
+        publishDirectory: '$(Build.ArtifactStagingDirectory)'
+        vstsFeedPublish: 'hello_world/goofy'
+        vstsFeedPackagePublish: 'helloworld-package'
+        versionOption: patch
+
+    - script: |
+        echo "Artifact Version: $(Build.BuildId)"
+      displayName: 'Print Artifact Version'
+
+    - script: |
+        rm -rf $(Build.ArtifactStagingDirectory)
+      displayName: 'Clean Up Artifact'

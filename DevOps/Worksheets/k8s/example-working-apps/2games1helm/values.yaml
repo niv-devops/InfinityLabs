@@ -1,0 +1,56 @@
+deployment:
+  game2048:
+    name: two-thousand-fourty-eight
+    namespace: my-deployment
+    replicas: 5
+    containers:
+      image: alexwhen/docker-2048
+      imagePullPolicy: Always
+      name: k8s-2048
+      containerPort: 80
+      protocol: TCP
+      restartPolicy: Always
+
+  gamesolitare:
+    name: solitaire
+    namespace: my-deployment
+    replicas: 5
+    containers:
+      image: nomercy235/solitaire:nginx
+      imagePullPolicy: Always
+      name: k8s-2048
+      containerPort: 80
+      protocol: TCP
+      restartPolicy: Always
+
+
+service:
+  game2048:
+    name: two-thousand-fourty-eight
+    namespace: my-deployment
+    type: ClusterIP
+    ports:
+      name: http
+      port: 80
+      targetPort: 80
+
+  gamesolitare:
+    name: solitaire
+    namespace: my-deployment
+    type: ClusterIP
+    ports:
+      name: http
+      port: 80
+      targetPort: 80
+
+
+ingress:
+  name: 2games1helm-ingress
+  namespace: my-deployment
+  ingressClassName: nginx
+  game1host: numbers.ilrdusa.com
+  game2host: solitare.ilrdusa.com
+  game1service: two-thousand-fourty-eight
+  game2service: solitaire-service
+  game1port: 80
+  game2port: http

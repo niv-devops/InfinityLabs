@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+metadata: 
+  name: 2games1helm
+  namespace: argocd
+kind: Application
+spec:
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: true
+    syncOptions:
+      - CreateNamespace=true
+  project: default
+  destination:
+    # Path to your kubernetes server below. In this example I've left it as 
+    # the current cluster which may not be best practice in a real
+    # production enviornment.
+    server: https://kubernetes.default.svc 
+    namespace: argo-testing
+  source:
+    repoURL: 993467604613.dkr.ecr.eu-central-1.amazonaws.com
+    targetRevision: 0.1.0
+    chart: 2games1helm
+    helm: 
+      passCredentials: true

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "goofy-chart.fullname" . }}-test-healthcheck
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  restartPolicy: Never
+  containers:
+    - name: healthcheck
+      image: curlimages/curl
+      command: ['curl', '-f', 'http://{{ .Release.Name }}-nginx:80']
+

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: brainfuel
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://dev.infinitylabs.co.il/devops/werxpace-gitops-dev.git
+    targetRevision: HEAD
+    path: helm-brainfuel
+    helm:
+      valueFiles:
+        - values-test.yaml  # Specify the values file you want to use
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: brainfuel
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

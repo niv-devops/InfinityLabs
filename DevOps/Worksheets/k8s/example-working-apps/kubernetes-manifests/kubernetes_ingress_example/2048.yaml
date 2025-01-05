@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: my-deployment
+  labels:
+    app: two-thousand-fourty-eight
+  name: two-thousand-fourty-eight
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: two-thousand-fourty-eight
+  template:
+    metadata:
+      labels:
+        app: two-thousand-fourty-eight
+    spec:
+      containers:
+      - image: alexwhen/docker-2048
+        imagePullPolicy: Always
+        name: docker-2048
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: two-thousand-fourty-eight
+  name: two-thousand-fourty-eight
+  namespace: my-deployment
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: two-thousand-fourty-eight

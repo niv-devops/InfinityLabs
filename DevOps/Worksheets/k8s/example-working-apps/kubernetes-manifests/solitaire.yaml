@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: my-deployment
+  name: solitaire-deployment
+  labels:
+    app: solitaire
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solitaire
+  template:
+    metadata:
+      labels:
+        app: solitaire
+    spec:
+      containers:
+        - name: solitaire
+          image: nomercy235/solitaire:nginx
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: my-deployment
+  name: solitaire-service
+spec:
+  selector:
+    app: solitaire
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
