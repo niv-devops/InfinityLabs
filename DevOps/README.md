@@ -1,1 +1,1 @@
-![Projects](./DevOps/images/projects.png)
+![Projects](./images/projects.png)
