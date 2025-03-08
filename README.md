@@ -1,11 +1,6 @@
 # Niv's repo
 
 <h3 align="center">Howdy pal 🤠</h3>
-<div align="center">
-  <a href="https://www.cprogramming.com" target="_blank" rel="noreferrer">
-    <img src="https://seeklogo.com/images/G/goofy-logo-A1C2DFD741-seeklogo.com.png" alt="c" width="80" height="auto"/>
-  </a>
-</div>
 <h3 align="center">Here you can find DevOps training material and conspiracies.</h3>
 
 ***
@@ -54,7 +49,7 @@
 <a href="https://gunicorn.org/" target="_blank" rel="noreferrer"> <img src="https://static-00.iconduck.com/assets.00/gunicorn-icon-2048x1245-14wjcllu.png" alt="gunicorn" width="40" height="40"/> </a>
 <a href="https://kafka.apache.org/" target="_blank" rel="noreferrer"> <img src="https://www.sentinelone.com/wp-content/uploads/2019/07/19130737/Kafka_use_cases_indicated_by_Kafka_logo_with_Scalyr_colors.png" alt="kafka" width="40" height="40"/> </a>
 <a href="https://zookeeper.apache.org/" target="_blank" rel="noreferrer"> <img src="https://dezyre.gumlet.io/files.dezyre.com/images/Tutorials/zookeeper_logo.png?w=360&dpr=2.6" alt="zookeeper" width="40" height="40"/> </a>
-<a href="https://www.sonarsource.com/" target="_blank" rel="noreferrer"> <img src="https://adrianalonso.es/wp-content/uploads/2017/10/sonarlogo.png" alt="sonarqube" width="40" height="40"/> </a>
+<a href="https://www.sonarsource.com/" target="_blank" rel="noreferrer"> <img src="https://cdn.worldvectorlogo.com/logos/sonarqube-1.svg" alt="sonarqube" width="40" height="40"/> </a>
 <a href="https://snyk.io" target="_blank" rel="noreferrer"> <img src="https://avatars.githubusercontent.com/u/12959162?s=280&v=4" alt="snyk" width="40" height="40"/> </a>
 <a href="https://www.wireshark.org/" target="_blank" rel="noreferrer"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Wireshark_icon_new.png/480px-Wireshark_icon_new.png" alt="wireshark" width="40" height="40"/> </a>
 
